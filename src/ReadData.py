@@ -23,8 +23,9 @@ class ReadData(object):
         del data #release data
         termin.insert(0, -1)
         termin.append(l-1)
-        batch=[ndata[termin[ind]+1:termin[ind+1],:] for ind in range(0,len(termin)-1)]
+        batch=[ndata[termin[ind]+1:termin[ind+1],:] for ind in range(0,len(termin)-1) if(termin[ind+1]-termin[ind]-1>=100)]
         self.gaze=[Gaze(b) for b in batch]
         
         
 u=ReadData()
+print "Success"
