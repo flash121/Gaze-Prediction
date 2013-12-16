@@ -4,7 +4,7 @@ Created on 2013-12-15
 @author: yfeng
 '''
 import numpy as np
-
+import scipy.stats as stat
 class Gaze(object):
     '''
     GazeDataStore Class
@@ -33,8 +33,6 @@ class Gaze(object):
         
     def correction(self):
         temp=np.hstack((self.gaze,self.mouse)) 
-        Q=np.dot(temp.T,temp)
-        dev=[np.sqrt(Q[i][i]) for i in range(0,4)]
-        correctV=[Q[i][j]/(dev[i]*dev[j]) for i in range(0,4) for j in range(0,4) if(i>j)]
+        correctV=[stat.pearsonr(temp[:,i], temp[:,j])[0] for i in range(0,4) for j in range(0,4) if(i>j)]
         return correctV
         
