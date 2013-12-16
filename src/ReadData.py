@@ -43,11 +43,12 @@ def kmeans(gazeset=None):
     data=np.array([gadata.corr for gadata in gazeset],dtype='float64')
     model=cl.KMeans(n_clusters=10, init='k-means++', n_init=15, max_iter=300, tol=0.0001, precompute_distances=True, verbose=0, random_state=None, copy_x=True, n_jobs=1, k=None)
     model.fit(data)
-    
+    return model
     print "Successful"
     
 u=ReadData()
-kmeans(u.gaze)
-
+est=kmeans(u.gaze)
+model=Cluster(est,order=2,C=1.0,eps=0.2,data=u.gaze)
+model.fit()
 
 
