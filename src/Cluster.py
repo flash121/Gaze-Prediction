@@ -3,8 +3,7 @@ Created on 2013-12-15
 
 @author: yfeng
 '''
-#from sklearn.svm import SVR
-from sklearn.linear_model  import LogisticRegression
+from sklearn.svm import SVR
 import  statsmodels.tsa.arima_model as model
 import numpy as np
 
@@ -23,30 +22,46 @@ class Cluster(object):
         '''
         self.kmode=model
         self.order=order
-        self.svrx=LogisticRegression(C=C,max_iter=1000)
-        self.svry=LogisticRegression(C=C,max_iter=1000)
+        self.svrx=SVR(C=C,epsilon=eps,max_iter=1000)
+        self.svry=SVR(C=C,epsilon=eps,max_iter=1000)
         self.gaze=np.array(data)
         self.nclus=nclus
         self.svrparam=[]
+        self.armaparam=[]
     def fit(self):
         label=np.array(self.kmode.labels_)
         i=0
         for l in range(0,self.nclus):
-            feat=(np.array([0,0,0,0,0,0,0,0,0,0]),np.array([0]),np.array([0,0,0,0,0,0,0,0,0,0]),np.array([0]))
             index=label==l
             labgaze=self.gaze[index]
+            par1=(np.zeros(self.order[0]),np.zeros(self.order[1]))
+            par2=(np.zeros(self.order[0]),np.zeros(self.order[1]))
+            for gaze in labgaze:
+                par=self.ARMA(self,gaze.mouse[0])
+                par1=(par1[0]+par[0],par1[1]+par1[1])
+                par=self.ARMA(self,gaze.mouse[1])
+                par2=(par2[0]+par[0],par2[1]+par2[1])
+            par1=(par1[0]/gaze.shape[0],par1[1]/gaze.shape[0])
+            par2=(par2[0]/gaze.shape[0],par2[1]/gaze.shape[0])
+            self.armaparam.append((par1,par2))
+            print i
+            i+=1
+                
+            '''
+            feat=(np.array([0,0,0,0,0,0,0,0,0,0]),np.array([0]),np.array([0,0,0,0,0,0,0,0,0,0]),np.array([0]))
             for gaze in labgaze:
                 temp=self.organziation(gaze)
                 feat=(np.vstack((feat[0],temp[0])),np.vstack((feat[1],temp[1])),np.vstack((feat[2],temp[2])),np.vstack((feat[3],temp[3])))
                 print i
                 i+=1
             self.SVR(feat)                
+            '''
             
     def organziation(self,gaze):
-        gaX=gaze.gaze[:,0]
-        gaY=gaze.gaze[:,1]
-        moX=gaze.mouse[:,0]
-        moY=gaze.mouse[:,1]
+        gaX=gaze.gaze[:,0]/1920.0
+        gaY=gaze.gaze[:,1]/1280.0
+        moX=gaze.mouse[:,0]/1920.0
+        moY=gaze.mouse[:,1]/1280.0
         l=moX.shape[0]
         startX=moX[0:10]
         startY=gaX[9]
