@@ -25,7 +25,7 @@ class Gaze(object):
         self.gaze=np.array(data[:][[1,2]],dtype='float64').T
         self.mouse=np.array(data[:][[3,4]],dtype='float64').T
         self.isclick=np.array(data[:][5],dtype='float16').T
-        self.tag=data[7][0]
+        self.tag=data[7,0]
         del data
         self.corr=self.correction()
         return
