@@ -26,8 +26,9 @@ class ReadData(object):
         termin.insert(0, -1)
         termin.append(l-1)
         for ind in range(0,len(termin)-1):
-            print str(termin[ind]+1)+' '+str(termin[ind+1])
-            Gaze(ndata[termin[ind]+1:termin[ind+1],:])
+            if(termin[ind+1]-termin[ind]-1>=100):
+                print str(termin[ind]+1)+' '+str(termin[ind+1])
+                Gaze(ndata[termin[ind]+1:termin[ind+1],:])
 
 def kmeans(gazeset=None):
     '''
