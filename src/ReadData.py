@@ -48,3 +48,6 @@ def kmeans(gazeset=None):
     
 u=ReadData()
 kmeans(u.gaze)
+
+
+

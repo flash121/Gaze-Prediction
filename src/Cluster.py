@@ -17,4 +17,9 @@ class Cluster(object):
         '''
         Store cluster information
         '''
-        
+    def fit(self,data):
+        pass
+    def SVR(self):
+        pass
+    def ARMA(self):
+        pass
