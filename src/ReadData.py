@@ -48,7 +48,7 @@ def kmeans(gazeset=None):
     
 u=ReadData()
 est=kmeans(u.gaze)
-model=Cluster(est,order=2,C=1.0,eps=0.2,data=u.gaze)
+model=Cluster(est,order=(2,1),C=1.0,eps=0.2,data=u.gaze)
 model.fit()
 
 

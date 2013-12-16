@@ -36,37 +36,33 @@ class Cluster(object):
             labgaze=self.gaze[index]
             par1=(np.zeros(self.order[0]),np.zeros(self.order[1]))
             par2=(np.zeros(self.order[0]),np.zeros(self.order[1]))
-            for gaze in labgaze:
-                par=self.ARMA(self,gaze.mouse[0])
-                par1=(par1[0]+par[0],par1[1]+par1[1])
-                par=self.ARMA(self,gaze.mouse[1])
-                par2=(par2[0]+par[0],par2[1]+par2[1])
-            par1=(par1[0]/gaze.shape[0],par1[1]/gaze.shape[0])
-            par2=(par2[0]/gaze.shape[0],par2[1]/gaze.shape[0])
-            self.armaparam.append((par1,par2))
-            print i
-            i+=1
-                
-            '''
             feat=(np.array([0,0,0,0,0,0,0,0,0,0]),np.array([0]),np.array([0,0,0,0,0,0,0,0,0,0]),np.array([0]))
             for gaze in labgaze:
+                par=self.ARMA(gaze.mouse[:,0])
+                par1=(par1[0]+par[0],par1[1]+par1[1])
+                par=self.ARMA(gaze.mouse[:,1])
+                par2=(par2[0]+par[0],par2[1]+par2[1])
                 temp=self.organziation(gaze)
                 feat=(np.vstack((feat[0],temp[0])),np.vstack((feat[1],temp[1])),np.vstack((feat[2],temp[2])),np.vstack((feat[3],temp[3])))
                 print i
                 i+=1
             self.SVR(feat)                
-            '''
+            par1=(par1[0]/gaze.shape[0],par1[1]/gaze.shape[0])
+            par2=(par2[0]/gaze.shape[0],par2[1]/gaze.shape[0])
+            self.armaparam.append((par1,par2))
+
             
-    def organziation(self,gaze):
+            
+    def organziation(self,gaze,order):
         gaX=gaze.gaze[:,0]/1920.0
         gaY=gaze.gaze[:,1]/1280.0
         moX=gaze.mouse[:,0]/1920.0
         moY=gaze.mouse[:,1]/1280.0
         l=moX.shape[0]
-        startX=moX[0:10]
-        startY=gaX[9]
-        startX2=moY[0:10]
-        startY2=gaY[9]
+        startX=moX[0:order]
+        startY=gaX[order-1]
+        startX2=moY[0:order]
+        startY2=gaY[order-1]
         for i in range(1,l-10):
             startX=np.vstack((startX,moX[i:i+10]))
             startY=np.vstack((startY,gaX[i+9]))
