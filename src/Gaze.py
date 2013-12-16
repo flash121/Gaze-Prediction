@@ -15,7 +15,6 @@ class Gaze(object):
     notes
     '''
 
-
     def __init__(self,data):
         '''
         store data into class
@@ -28,11 +27,12 @@ class Gaze(object):
         self.tag=data[7,0]
         del data
         self.corr=self.correction()
+        self.corr[np.isnan(self.corr)]=0
         return
     
         
     def correction(self):
         temp=np.hstack((self.gaze,self.mouse)) 
-        correctV=[stat.pearsonr(temp[:,i], temp[:,j])[0] for i in range(0,4) for j in range(0,4) if(i>j)]
+        correctV=np.array([stat.pearsonr(temp[:,i], temp[:,j])[0] for i in range(0,4) for j in range(0,4) if(i>j)],dtype='float64')
         return correctV
         
