@@ -25,11 +25,9 @@ class Gaze(object):
         data=data.T
         self.time=np.array(data[:][0],dtype='float32').T
         self.gaze=np.array(data[:][[1,2]],dtype='float64').T
-        self.gaze[0]=self.gaze[0]/1920   #normalization
-        self.gaze[1]=self.gaze[1]/1280    
+        self.standard(self.gaze)
         self.mouse=np.array(data[:][[3,4]],dtype='float64').T
-        self.mouse[0]=self.mouse[0]/1920
-        self.mouse[1]=self.mouse[1]/1280    
+        self.mouse=self.standard(self.mouse)
         self.isclick=np.array(data[:][5],dtype='float16').T
         self.tag=data[7,0]
         del data
@@ -95,7 +93,14 @@ class Gaze(object):
         Only combined SVRX/Y & ARX/Y will combined, other remains, 
         for training process
         '''
-        self.ARX=(np.vstack((self.ARX[0],stack.ARX[0])),np.vstack((self.ARX[1],stack.ARX[1])))
-        self.ARY=(np.vstack((self.ARY[0],stack.ARY[0])),np.vstack((self.ARY[1],stack.ARY[1])))
-        self.SVRX=(np.vstack((self.SVRX[0],stack.SVRX[0])),np.vstack((self.SVRX[1],stack.SVRX[1])))
-        self.SVRY=(np.vstack((self.SVRY[0],stack.SVRY[0])),np.vstack((self.SVRY[1],stack.SVRY[1])))
+        self.ARX=(np.vstack((self.ARX[0],stack.ARX[0])),np.hstack((self.ARX[1],stack.ARX[1])))
+        self.ARY=(np.vstack((self.ARY[0],stack.ARY[0])),np.hstack((self.ARY[1],stack.ARY[1])))
+        self.SVRX=(np.vstack((self.SVRX[0],stack.SVRX[0])),np.hstack((self.SVRX[1],stack.SVRX[1])))
+        self.SVRY=(np.vstack((self.SVRY[0],stack.SVRY[0])),np.hstack((self.SVRY[1],stack.SVRY[1])))
+    def standard(self,item,s=(1920,1280)):
+        '''
+        standard measure
+        '''
+        item[:,0]=item[:,0]/s[0]
+        item[:,1]=item[:,1]/s[1]
+        return item
