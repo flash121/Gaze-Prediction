@@ -48,10 +48,10 @@ class Cluster(object):
             
             
     def organziation(self,gaze,order):
-        gaX=gaze.gaze[:,0]/1920.0
-        gaY=gaze.gaze[:,1]/1280.0
-        moX=gaze.mouse[:,0]/1920.0
-        moY=gaze.mouse[:,1]/1280.0
+        gaX=gaze.gaze[:,0]
+        gaY=gaze.gaze[:,1]
+        moX=gaze.mouse[:,0]
+        moY=gaze.mouse[:,1]
         l=moX.shape[0]
         startX=moX[0:order]
         startY=gaX[order-1]
@@ -65,10 +65,10 @@ class Cluster(object):
         return (startX,startY,startX2,startY2)
     
     def organziation2(self,gaze,order):
-        gaX=gaze.gaze[:,0]/1920.0
-        gaY=gaze.gaze[:,1]/1280.0
-        moX=gaze.mouse[:,0]/1920.0
-        moY=gaze.mouse[:,1]/1280.0
+        gaX=gaze.gaze[:,0]
+        gaY=gaze.gaze[:,1]
+        moX=gaze.mouse[:,0]
+        moY=gaze.mouse[:,1]
         l=moX.shape[0]
         startX=moX[0:order]
         startY=moX[order]

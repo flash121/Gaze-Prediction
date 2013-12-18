@@ -22,7 +22,11 @@ class Gaze(object):
         data=data.T
         self.time=np.array(data[:][0],dtype='float32').T
         self.gaze=np.array(data[:][[1,2]],dtype='float64').T
+        self.gaze[0]=self.gaze[0]/1920   #normalization
+        self.gaze[1]=self.gaze[1]/1280    
         self.mouse=np.array(data[:][[3,4]],dtype='float64').T
+        self.mouse[0]=self.mouse[0]/1920
+        self.mouse[1]=self.mouse[1]/1280    
         self.isclick=np.array(data[:][5],dtype='float16').T
         self.tag=data[7,0]
         del data
