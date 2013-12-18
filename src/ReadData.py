@@ -5,7 +5,7 @@ Created on 2013-12-15
 '''
 import numpy as np
 from Gaze import Gaze
-from Cluster import Cluster
+from Cluster import GazeFit
 import  sklearn.cluster as cl
 class ReadData(object):
     '''
@@ -48,7 +48,7 @@ def kmeans(gazeset=None):
     
 u=ReadData()
 est=kmeans(u.gaze)
-model=Cluster(est,order=(2,1),C=1.0,eps=0.2,data=u.gaze)
+model=GazeFit(est,order=(2,1),C=1.0,eps=0.2,data=u.gaze)
 model.fit()
 
 
