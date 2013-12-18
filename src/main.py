@@ -29,8 +29,8 @@ class ReadData(object):
         i=0
         for ind in range(0,len(termin)-1):
             if(termin[ind+1]-termin[ind]-1>=20):
-                if(i==929):
-                    i=929
+                if(i==100):
+                    break
                 print str(termin[ind]+1)+' '+str(termin[ind+1])
                 self.gaze.append(Gaze(ndata[termin[ind]+1:termin[ind+1],:]))
                 print (i,self.gaze[i].corr)
@@ -48,7 +48,8 @@ def kmeans(gazeset=None):
     
 u=ReadData()
 est=kmeans(u.gaze)
-model=GazeFit(est,order=(2,1),C=1.0,eps=0.2,data=u.gaze)
+model=GazeFit(est,order=10,C=1.0,eps=0.2,data=u.gaze,nclus=3)
 model.fit()
+model.predict(u.gaze[30])
 
 

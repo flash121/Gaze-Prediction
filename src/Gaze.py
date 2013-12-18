@@ -60,8 +60,8 @@ class Gaze(object):
             XY=np.vstack((XY,labelX[i+order]))
             YX=np.vstack((YX,labelY[i:i+order]))
             YY=np.vstack((YY,labelY[i+order]))
-        self.ARX=(XX,YX.T[0])
-        self.ARY=(XY,YY.T[0])
+        self.ARX=(XX,XY.T[0])
+        self.ARY=(YX,YY.T[0])
     def ConvertSVRtrain(self,label,target,order):
         '''
         SVR train version
@@ -84,8 +84,8 @@ class Gaze(object):
             XY=np.vstack((XY,targetX[i+order-1]))
             YX=np.vstack((YX,labelY[i:i+order]))
             YY=np.vstack((YY,targetY[i+order-1]))
-        self.SVRX=(XX,YX.T[0])
-        self.SVRY=(XY,YY.T[0])            
+        self.SVRX=(XX,XY.T[0])
+        self.SVRY=(YX,YY.T[0])            
     def stack(self,stack):
         '''
         gaze.stack(gaze2)

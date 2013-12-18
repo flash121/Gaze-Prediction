@@ -20,11 +20,11 @@ class GazeFit(object):
         '''
         self.kmode=model
         self.order=order
-        self.svrx=SVR(C=C,epsilon=eps,max_iter=1000)
-        self.svry=SVR(C=C,epsilon=eps,max_iter=1000)
         self.gaze=np.array(data)
         self.nclus=nclus
         self.svrparam=[]
+        self.C=C
+        self.eps=eps
         self.armaparam=[]
     def fit(self):
         '''
@@ -50,17 +50,21 @@ class GazeFit(object):
         '''
         @note: SVR train processing
         '''
-        self.svrx.fit(ga.SVRX[0], ga.SVRX[1])
-        self.svry.fit(ga.SVRY[0], ga.SVRY[1])
-        self.svrparam.append((self.svrx,self.svry))
+        svrx=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        svry=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        svrx.fit(ga.SVRX[0], ga.SVRX[1])
+        svry.fit(ga.SVRY[0], ga.SVRY[1])
+        self.svrparam.append((svrx,svry))
     def AR(self,ga):
         '''
         @note: AR train processing
         '''
-        self.svrx.fit(ga.ARX[0], ga.ARX[1])
-        self.svry.fit(ga.ARY[0], ga.ARY[1])
-        self.armaparam.append((self.svrx,self.svry))
-    def predict(self,x):
+        svrx=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        svry=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        svrx.fit(ga.ARX[0], ga.ARX[1])
+        svry.fit(ga.ARY[0], ga.ARY[1])
+        self.armaparam.append((svrx,svry))
+    def predict(self,chunk):
         '''
         @note: predict function
         @note: basic idea;
@@ -68,7 +72,19 @@ class GazeFit(object):
                2. SVR model regression -> gaze position (for x,y)
         @param x: 1xorder+1 time series
         '''
-        pass
+        mo=[self.measure(model[0].predict(chunk.ARX[0]),chunk.ARX[1])+self.measure(model[0].predict(chunk.ARY[0]),chunk.ARY[1]) for model in self.armaparam]
+        hand=np.argmax(np.array(mo))
+        svr=self.svrparam[hand]
+        x=np.array(svr[0].predict(chunk.SVRX[0]))
+        y=np.array(svr[1].predict(chunk.SVRY[0]))
+        return np.hstack((x,y))
+        
+    def measure(self,x,y):
+        '''
+        @note: distance measure, current only norm-2 measure
+        @note: use for measuring performance
+        '''    
+        return sum(abs(x-y))
         
     '''
     @note: older part/plan to delete
