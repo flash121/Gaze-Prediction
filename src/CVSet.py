@@ -55,3 +55,8 @@ class CVTest(object):
         pass
     def clean(self):
         self.flag=True
+    def status(self):
+        '''
+        @note: return summarizing variable
+        '''
+        pass
