@@ -15,16 +15,18 @@ class CVTest(object):
     '''
 
 
-    def __init__(self,data=None,mode='SVR',per=0.8,N=10):
+    def __init__(self,data=None,mode='SVR',per=0.8,N=10,rand_stage=0,options):
         '''
         Constructor
         @param data: 1xn gaze objects
         @param mode: mode for [LR][SVR]
         @param per: percent for splitting 
         '''
+        self.options=options
+        self.rand_stage=rand_stage
         self.data=data
         self.mode=mode
-        self.per=per
+        self.size=per
         self.N=N
         self.flag=True
         self.scoring=[]
@@ -52,7 +54,9 @@ class CVTest(object):
         '''
         @note: main CV processing
         '''
-        pass
+        X_trian,X_test,[],[]=cross_validation.train_test_split(self.data,self.data, test_size=self.size, random_state=self.rand_stage)
+        
+        
     def clean(self):
         self.flag=True
     def status(self):
@@ -60,3 +64,24 @@ class CVTest(object):
         @note: return summarizing variable
         '''
         pass
+    
+class Options(object):
+    def __init__(self,order=None,C=None,eps=None,nclus=None):
+        self.order=order
+        self.C=C
+        self.eps=eps
+        self.nclus=nclus
+    def rw(self,key,val):
+        '''
+        @note: rewrite func, for rewirite special val
+        '''
+        if key == 'o':
+            self.order=val
+        else:
+            if key == 'C':
+                self.C=val
+            else:
+                if key == 'e':
+                    self.eps=val
+                else:
+                    self.nclus=val
