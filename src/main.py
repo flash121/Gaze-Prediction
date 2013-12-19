@@ -37,10 +37,7 @@ class GPDriver(object):
                 i+=1
 
 
-    
 u=GPDriver()
 model=GazeFit(order=10,C=1.0,eps=0.2,data=u.gaze,nclus=3)
 model.fit()
 model.predict(u.gaze[30])
-
-

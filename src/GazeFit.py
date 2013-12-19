@@ -99,7 +99,7 @@ class GazeFit(object):
         x=np.array(svr[0].predict(chunk.SVRX[0]))
         y=np.array(svr[1].predict(chunk.SVRY[0]))
         return np.hstack((x,y))
-    def scoring(self,chunk,target):
+    def scoring(self,chunk):
         '''
         @note similar to predict 
         '''
@@ -108,7 +108,7 @@ class GazeFit(object):
         svr=self.svrparam[hand]
         x=np.array(svr[0].predict(chunk.SVRX[0]))
         y=np.array(svr[1].predict(chunk.SVRY[0]))
-        return self.measure(x,target.SVRX[1])+self.measure(y,target.SVRY[1]) 
+        return self.measure(x,chunk.SVRX[1])+self.measure(y,chunk.SVRY[1]) 
     def measure(self,x,y):
         '''
         @note: distance measure, current only norm-2 measure

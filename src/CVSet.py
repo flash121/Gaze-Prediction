@@ -6,6 +6,7 @@ Created on 2013-12-18
 
 from GazeFit import GazeFit
 from sklearn import cross_validation
+import numpy as np
 
 class CVTest(object):
     '''
@@ -13,7 +14,6 @@ class CVTest(object):
     @note: extend from scikit-learn CV class 
     @note: the main process for cv training
     '''
-
 
     def __init__(self,data=None,mode='SVR',per=0.8,N=10,rand_stage=0,options):
         '''
@@ -54,9 +54,15 @@ class CVTest(object):
         '''
         @note: main CV processing
         '''
-        X_train=cross_validation.train_test_split(self.data,self.data, test_size=self.size, random_state=self.rand_stage)
-        model=GazeFit(cmodel,self.option.order,self.options.C,self.options.eps,X_train,self.options.nclus)
-        
+        X_train,X_test,Y_train,Y_test=cross_validation.train_test_split(self.data,self.data, test_size=self.size, random_state=self.rand_stage)
+        del Y_train
+        del Y_test
+        model=GazeFit(self.option.order,self.options.C,self.options.eps,X_train,self.options.nclus)
+        model.fit()
+        X_Gaze=combine(X_test)
+        scores=np.array([model.scoring(data) for data in X_Gaze])
+        return np.average(scores)
+    
     def clean(self):
         self.flag=True
     def status(self):
@@ -85,3 +91,13 @@ class Options(object):
                     self.eps=val
                 else:
                     self.nclus=val
+                    
+def combine(gazes):
+    gaze=gazes[0]
+    i=0
+    for ga in gazes:
+        if i==0:
+            i+=1
+            continue
+        gaze.stack(ga)
+    return gaze
