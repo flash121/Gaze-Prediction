@@ -75,7 +75,7 @@ class CVTest(object):
         '''
         @note: return summarizing variable
         '''
-        pass
+        return (np.average(np.array(self.scoring)),np.std(np.array(self.scoring)))
     
 class Options(object):
     def __init__(self,order=None,C=None,eps=None,nclus=None):

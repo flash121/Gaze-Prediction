@@ -6,7 +6,8 @@ Created on 2013-12-15
 import numpy as np
 from Gaze import Gaze
 from GazeFit import GazeFit
-from CVSet import CVSet
+from CVSet import CVTest 
+from CVSet import Options
 
 class GPDriver(object):
     '''
@@ -38,13 +39,39 @@ class GPDriver(object):
                 i+=1
 
 
-def featureSelect():
+def featureSelect(opt,data):
     '''
-    @note: feature selection for training
-    '''
+    @note: feature selection for training, model params:
+    @param order: order of AR & SVR Prediction
+    @param C: SVR model parameter
+    @param eps: SVR model paramter
+    @param nclus: number of clustering for separable training
+    @param data: main training data
+    @attention: input is Options class
+    @return: best feature set
+    @note: most simple version: muti-layer feature selection
     
-    pass 
+    @author: yfeng
+    @version: 0.01
+    '''
+    #first - layer: order
+    cv=CVTest(data=data, options=opt)
+    mval=np.mean(np.array([score for score in cv]))
+    bestorder=1
+    for i in range(2,11):
+        opt.rw('o', i)
+        cv=CVTest(data=data, options=opt)
+        val=np.mean(np.array([score for score in cv]))
+        if mval>val:
+            mval=val
+            bestorder=i
+    #second - layer: C
+            
+    return bestorder
+    
 
+
+opt=Options(order=10,C=1.0,eps=0.2,nclus=3)
 u=GPDriver()
 model=GazeFit(order=10,C=1.0,eps=0.2,data=u.gaze,nclus=3)
 model.fit()
