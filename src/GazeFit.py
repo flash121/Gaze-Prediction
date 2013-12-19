@@ -13,6 +13,9 @@ class GazeFit(object):
     @param data index: 
     @param ARMA parameter:  
     @param SVR parameter:   
+    @param mode: mode switch param, provide [LR][SVR]
+    @version: 0.01
+    @author: yfeng
     '''
 
     def __init__(self,model=None,data=None,order=10,C=1.0,eps=0.2,nclus=10,mode='SVR'):
@@ -88,7 +91,13 @@ class GazeFit(object):
         x=np.array(svr[0].predict(chunk.SVRX[0]))
         y=np.array(svr[1].predict(chunk.SVRY[0]))
         return np.hstack((x,y))
-        
+    def scoring(self,chunk,target):
+        mo=[self.measure(model[0].predict(chunk.ARX[0]),chunk.ARX[1])+self.measure(model[0].predict(chunk.ARY[0]),chunk.ARY[1]) for model in self.armaparam]
+        hand=np.argmax(np.array(mo))
+        svr=self.svrparam[hand]
+        x=np.array(svr[0].predict(chunk.SVRX[0]))
+        y=np.array(svr[1].predict(chunk.SVRY[0]))
+        return self.measure(x,target.SVRX[1])+self.measure(y,target.SVRY[1]) 
     def measure(self,x,y):
         '''
         @note: distance measure, current only norm-2 measure
