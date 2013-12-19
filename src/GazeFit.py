@@ -6,6 +6,7 @@ Created on 2013-12-15
 from sklearn.svm import SVR
 from sklearn.linear_model import LinearRegression
 import numpy as np
+import sklearn.cluster as cl
 
 class GazeFit(object):
     '''
@@ -18,11 +19,10 @@ class GazeFit(object):
     @author: yfeng
     '''
 
-    def __init__(self,model=None,data=None,order=10,C=1.0,eps=0.2,nclus=10,mode='SVR'):
+    def __init__(self,data=None,order=10,C=1.0,eps=0.2,nclus=10,mode='SVR'):
         '''
         @note: Store cluster information
         '''
-        self.kmode=model
         self.order=order
         self.gaze=np.array(data)
         self.nclus=nclus
@@ -31,6 +31,7 @@ class GazeFit(object):
         self.eps=eps
         self.mode=mode
         self.armaparam=[]
+        self.kmode=self.kmeans(data, nclus)
     def fit(self):
         '''
         @note: Overall fit process
@@ -50,7 +51,14 @@ class GazeFit(object):
                 i+=1
             self.SVR(ga)                
             self.AR(ga)
-   
+    def kmeans(self,gazeset,n):
+        '''
+        @note: implement Kmeans for clustering
+        '''
+        data=np.array([gadata.corr for gadata in gazeset],dtype='float64')
+        model=cl.KMeans(n_clusters=n, init='k-means++', n_init=15, max_iter=300, tol=0.0001, precompute_distances=True, verbose=0, random_state=None, copy_x=True, n_jobs=1, k=None)
+        model.fit(data)
+        return model
     def SVR(self,ga):
         '''
         @note: SVR train processing
@@ -92,6 +100,9 @@ class GazeFit(object):
         y=np.array(svr[1].predict(chunk.SVRY[0]))
         return np.hstack((x,y))
     def scoring(self,chunk,target):
+        '''
+        @note similar to predict 
+        '''
         mo=[self.measure(model[0].predict(chunk.ARX[0]),chunk.ARX[1])+self.measure(model[0].predict(chunk.ARY[0]),chunk.ARY[1]) for model in self.armaparam]
         hand=np.argmax(np.array(mo))
         svr=self.svrparam[hand]

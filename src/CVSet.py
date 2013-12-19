@@ -3,7 +3,7 @@ Created on 2013-12-18
 
 @author: yfeng
 '''
-import Gaze
+
 from GazeFit import GazeFit
 from sklearn import cross_validation
 

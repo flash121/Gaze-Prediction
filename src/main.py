@@ -5,9 +5,9 @@ Created on 2013-12-15
 '''
 import numpy as np
 from Gaze import Gaze
-from  GazeFit import GazeFit
-import  sklearn.cluster as cl
-class ReadData(object):
+from GazeFit import GazeFit
+
+class GPDriver(object):
     '''
     Reading raw data.txt content, store into Gaze Class List
     '''
@@ -36,19 +36,10 @@ class ReadData(object):
                 print (i,self.gaze[i].corr)
                 i+=1
 
-def kmeans(gazeset=None):
-    '''
-    implement Kmeans for clustering
-    '''
-    data=np.array([gadata.corr for gadata in gazeset],dtype='float64')
-    model=cl.KMeans(n_clusters=3, init='k-means++', n_init=15, max_iter=300, tol=0.0001, precompute_distances=True, verbose=0, random_state=None, copy_x=True, n_jobs=1, k=None)
-    model.fit(data)
-    return model
-    print "Successful"
+
     
-u=ReadData()
-est=kmeans(u.gaze)
-model=GazeFit(est,order=10,C=1.0,eps=0.2,data=u.gaze,nclus=3)
+u=GPDriver()
+model=GazeFit(order=10,C=1.0,eps=0.2,data=u.gaze,nclus=3)
 model.fit()
 model.predict(u.gaze[30])
 
