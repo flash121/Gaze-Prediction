@@ -5,7 +5,7 @@ Created on 2013-12-15
 '''
 import numpy as np
 from Gaze import Gaze
-from Cluster import GazeFit
+from  GazeFit import GazeFit
 import  sklearn.cluster as cl
 class ReadData(object):
     '''
