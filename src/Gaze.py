@@ -30,6 +30,7 @@ class Gaze(object):
         self.mouse=self.standard(self.mouse)
         self.isclick=np.array(data[:][5],dtype='float16').T
         self.tag=data[7,0]
+        self.order=order
         del data
         self.corr=self.correction()
         self.corr[np.isnan(self.corr)]=0
@@ -104,3 +105,35 @@ class Gaze(object):
         item[:,0]=item[:,0]/s[0]
         item[:,1]=item[:,1]/s[1]
         return item
+    def __iter__(self):
+        '''
+        @note: iteration schema: 
+        @note: each iteration return first n-vector AR,SVR
+        '''
+        for n in range(0,self.ARX[0].shape[0]):
+            yield GazeIter(self,n)
+    def __getitem__(self,k):
+        '''
+        @attention: same as __iter__
+        '''
+        return GazeIter(self,k)
+    def __str__(self):
+        '''
+        @note: print information about: Len, Order
+        '''
+        return "AR shape: (%d,%d), order: %d" % (self.ARX[0].shape[0],self.ARX[0].shape[1],self.order)
+class GazeIter(object):
+    '''
+    @note: a simple object for iter Gaze - AR, SVR value
+    @note: for prediction simulate
+    @note: only init func
+    '''
+    def __init__(self,gaze,n=1):
+        self.n=n
+        self.ARX=(gaze.ARX[0][0:n,:],gaze.ARX[1][0:n])
+        self.ARY=(gaze.ARY[0][0:n,:],gaze.ARY[1][0:n])
+        self.SVRX=(gaze.SVRX[0][0:n,:],gaze.SVRX[1][0:n])
+        self.SVRY=(gaze.SVRY[0][0:n,:],gaze.SVRY[1][0:n])
+    def __str__(self):
+        return "Gaze Iteration, n= %d" % (self.n)
+    
