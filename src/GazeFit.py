@@ -4,6 +4,7 @@ Created on 2013-12-15
 @author: yfeng
 '''
 from sklearn.svm import SVR
+from sklearn.linear_model import LinearRegression
 import numpy as np
 
 class GazeFit(object):
@@ -14,7 +15,7 @@ class GazeFit(object):
     @param SVR parameter:   
     '''
 
-    def __init__(self,model=None,data=None,order=10,C=1.0,eps=0.2,nclus=10):
+    def __init__(self,model=None,data=None,order=10,C=1.0,eps=0.2,nclus=10,mode='SVR'):
         '''
         @note: Store cluster information
         '''
@@ -25,6 +26,7 @@ class GazeFit(object):
         self.svrparam=[]
         self.C=C
         self.eps=eps
+        self.mode=mode
         self.armaparam=[]
     def fit(self):
         '''
@@ -50,8 +52,12 @@ class GazeFit(object):
         '''
         @note: SVR train processing
         '''
-        svrx=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
-        svry=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        if(self.mode=='SVR'):
+            svrx=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+            svry=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        else:
+            svrx=LinearRegression()
+            svry=LinearRegression()
         svrx.fit(ga.SVRX[0], ga.SVRX[1])
         svry.fit(ga.SVRY[0], ga.SVRY[1])
         self.svrparam.append((svrx,svry))
@@ -59,8 +65,12 @@ class GazeFit(object):
         '''
         @note: AR train processing
         '''
-        svrx=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
-        svry=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        if(self.mode=='SVR'):
+            svrx=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+            svry=SVR(C=self.C,epsilon=self.eps,max_iter=1000)
+        else:
+            svrx=LinearRegression()
+            svry=LinearRegression()        
         svrx.fit(ga.ARX[0], ga.ARX[1])
         svry.fit(ga.ARY[0], ga.ARY[1])
         self.armaparam.append((svrx,svry))
