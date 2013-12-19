@@ -4,7 +4,7 @@ Created on 2013-12-18
 @author: yfeng
 '''
 import Gaze
-import GazeFit
+from GazeFit import GazeFit
 from sklearn import cross_validation
 
 class CVTest(object):
@@ -54,8 +54,8 @@ class CVTest(object):
         '''
         @note: main CV processing
         '''
-        X_trian,X_test,[],[]=cross_validation.train_test_split(self.data,self.data, test_size=self.size, random_state=self.rand_stage)
-        
+        X_train=cross_validation.train_test_split(self.data,self.data, test_size=self.size, random_state=self.rand_stage)
+        model=GazeFit(cmodel,self.option.order,self.options.C,self.options.eps,X_train,self.options.nclus)
         
     def clean(self):
         self.flag=True
