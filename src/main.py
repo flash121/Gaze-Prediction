@@ -39,7 +39,7 @@ class GPDriver(object):
                 i+=1
 
 
-def featureSelect(opt,data):
+def Selectloop(opt,data):
     '''
     @note: feature selection for training, model params:
     @param order: order of AR & SVR Prediction
@@ -65,10 +65,51 @@ def featureSelect(opt,data):
         if mval>val:
             mval=val
             bestorder=i
+    opt.rw('o', bestorder)
     #second - layer: C
-            
-    return bestorder
+    bestC=opt.C
+    for i in range(0.1,0.5,10):
+        opt.rw('C', i)
+        cv=CVTest(data=data, options=opt)
+        val=np.mean(np.array([score for score in cv]))
+        if mval>val:
+            mval=val
+            bestC=i
+    opt.rw('C', bestC)    
+    #third layer
+    beste=opt.eps
+    for i in range(0.1,0.1,1):
+        opt.rw('e', i)
+        cv=CVTest(data=data, options=opt)
+        val=np.mean(np.array([score for score in cv]))
+        if mval>val:
+            mval=val
+            bestC=i
+    opt.rw('e', beste)    
+    #forth layer
+    bestn=opt.nclus
+    for i in range(2,1,10):
+        opt.rw('n', i)
+        cv=CVTest(data=data, options=opt)
+        val=np.mean(np.array([score for score in cv]))
+        if mval>val:
+            mval=val
+            bestC=i
+    opt.rw('n', bestn)       
     
+    return opt
+
+def FS(opt,data):
+    opt=Selectloop(opt,data)
+    while 1:
+        optN=Selectloop(opt,data)
+        if(optN == opt):
+            break
+        else:
+            opt=optN
+    return opt
+        
+        
 
 
 opt=Options(order=10,C=1.0,eps=0.2,nclus=3)

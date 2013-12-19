@@ -97,6 +97,17 @@ class Options(object):
                     self.eps=val
                 else:
                     self.nclus=val
+    def __eq__(self,other):
+        '''
+        @note: == operator for Option
+        '''
+        return self.C==other.C & self.eps==other.eps & self.order==other.order & self.nclus==other.nclus
+    
+    def __ne__(self,other):
+        '''
+        @note: != or <> operator for Option
+        '''
+        return self.C<>other.C | self.eps<>other.eps | self.order<>other.order | self.nclus<>other.nclus
                     
 def combine(gazes):
     gaze=gazes[0]
