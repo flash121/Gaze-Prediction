@@ -6,6 +6,7 @@ Created on 2013-12-15
 import numpy as np
 from Gaze import Gaze
 from GazeFit import GazeFit
+from CVSet import CVSet
 
 class GPDriver(object):
     '''
@@ -36,6 +37,13 @@ class GPDriver(object):
                 print (i,self.gaze[i].corr)
                 i+=1
 
+
+def featureSelect():
+    '''
+    @note: feature selection for training
+    '''
+    
+    pass 
 
 u=GPDriver()
 model=GazeFit(order=10,C=1.0,eps=0.2,data=u.gaze,nclus=3)

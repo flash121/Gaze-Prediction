@@ -37,14 +37,20 @@ class CVTest(object):
                         [result]=[score for [object] in [CVTest]]                
         '''
         if self.flag:
-            pass
+            if len(self.scoring)<self.N:
+                val=self.CVscoring()
+                self.scoring.append(val)
+                yield val
+            else:
+                self.flag=False
         else:
-            pass
+            for x in self.scoring:
+                yield x
     def __str__(self):
         '''
         @note: show status
         '''
-        pass
+        return "CV Configuration: Number of Train: %d, isComplete %d, CVsize %d \n Scores: "+self.scoring.__str__() % (self.N,self.flag,self.size)
     def __getitem__(self,k):
         try:
             return self.scoring[k]
